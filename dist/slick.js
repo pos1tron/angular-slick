@@ -28,8 +28,8 @@ angular.module('slick', []).directive('slick', [
         infinite: '@',
         initialSlide: '@',
         lazyLoad: '@',
-        onBeforeChange: '&',
-        onAfterChange: '&',
+        onBeforeChange: '=',
+        onAfterChange: '=',
         onInit: '&',
         onReInit: '&',
         onSetPosition: '&',
@@ -126,7 +126,7 @@ angular.module('slick', []).directive('slick', [
             });
             slider.on('afterChange', function (event, slick, currentSlide, nextSlide) {
               if (scope.onAfterChange) {
-                scope.onAfterChange();
+                scope.onAfterChange(slick, currentSlide, nextSlide);
               }
               if (currentIndex != null) {
                 return scope.$apply(function () {
