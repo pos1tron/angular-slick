@@ -96,7 +96,6 @@ angular.module('slick', []).directive('slick', [
               infinite: scope.infinite !== 'false',
               initialSlide: scope.initialSlide || 0,
               lazyLoad: scope.lazyLoad || 'ondemand',
-              beforeChange: attrs.onBeforeChange ? scope.onBeforeChange : void 0,
               onReInit: attrs.onReInit ? scope.onReInit : void 0,
               onSetPosition: attrs.onSetPosition ? scope.onSetPosition : void 0,
               pauseOnHover: scope.pauseOnHover !== 'false',
@@ -122,6 +121,11 @@ angular.module('slick', []).directive('slick', [
               }
               if (currentIndex != null) {
                 return sl.slideHandler(currentIndex);
+              }
+            });
+            slider.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+              if (attrs.onBeforeChange) {
+                return scope.onBeforeChange(slick, currentSlide, nextSlide);
               }
             });
             slider.on('afterChange', function (event, slick, currentSlide, nextSlide) {
