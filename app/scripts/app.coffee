@@ -27,8 +27,8 @@ angular.module('slick', [])
       infinite: "@"
       initialSlide: "@"
       lazyLoad: "@"
-      onBeforeChange: "&"
-      onAfterChange: "&"
+      onBeforeChange: "="
+      onAfterChange: "="
       onInit: "&"
       onReInit: "&"
       onSetPosition: "&"
@@ -115,7 +115,7 @@ angular.module('slick', [])
               sl.slideHandler(currentIndex)
 
           slider.on 'afterChange', (event, slick, currentSlide, nextSlide) ->
-            scope.onAfterChange() if scope.onAfterChange
+            scope.onAfterChange(slick, currentSlide, nextSlide) if scope.onAfterChange
 
             if currentIndex?
               scope.$apply(->
