@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('slick', [])
-  .directive "slick", ($timeout) ->
+  .directive "slick", ($timeout, $compile) ->
     restrict: "AEC"
     scope:
       initOnload: "@"
@@ -29,7 +29,7 @@ angular.module('slick', [])
       lazyLoad: "@"
       onBeforeChange: "="
       onAfterChange: "="
-      onInit: "&"
+      onInit: "="
       onReInit: "&"
       onSetPosition: "&"
       pauseOnHover: "@"
@@ -104,12 +104,12 @@ angular.module('slick', [])
             useCSS: scope.useCSS isnt "false"
             variableWidth: scope.variableWidth is "true"
             vertical: scope.vertical is "true"
-            prevArrow: if scope.prevArrow then $(scope.prevArrow) else undefined
-            nextArrow: if scope.nextArrow then $(scope.nextArrow) else undefined
+            prevArrow: if scope.prevArrow then scope.prevArrow else undefined
+            nextArrow: if scope.nextArrow then scope.nextArrow else undefined
 
 
           slider.on 'init', (sl) ->
-            scope.onInit() if attrs.onInit
+            scope.onInit(sl) if attrs.onInit
             if currentIndex?
               sl.slideHandler(currentIndex)
 
@@ -124,6 +124,10 @@ angular.module('slick', [])
                 currentIndex = currentSlide
                 scope.currentIndex = currentSlide
               )
+
+          if scope.prevArrow || scope.nextArrow
+            $compile(slider[0].slick.$nextArrow)(scope.$parent);
+            $compile(slider[0].slick.$prevArrow)(scope.$parent);
 
           scope.$watch("currentIndex", (newVal, oldVal) ->
             if currentIndex? and newVal? and newVal != currentIndex

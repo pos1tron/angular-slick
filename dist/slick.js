@@ -1,7 +1,8 @@
 'use strict';
 angular.module('slick', []).directive('slick', [
   '$timeout',
-  function ($timeout) {
+  '$compile',
+  function ($timeout, $compile) {
     return {
       restrict: 'AEC',
       scope: {
@@ -30,7 +31,7 @@ angular.module('slick', []).directive('slick', [
         lazyLoad: '@',
         onBeforeChange: '=',
         onAfterChange: '=',
-        onInit: '&',
+        onInit: '=',
         onReInit: '&',
         onSetPosition: '&',
         pauseOnHover: '@',
@@ -112,12 +113,12 @@ angular.module('slick', []).directive('slick', [
               useCSS: scope.useCSS !== 'false',
               variableWidth: scope.variableWidth === 'true',
               vertical: scope.vertical === 'true',
-              prevArrow: scope.prevArrow ? $(scope.prevArrow) : void 0,
-              nextArrow: scope.nextArrow ? $(scope.nextArrow) : void 0
+              prevArrow: scope.prevArrow ? scope.prevArrow : void 0,
+              nextArrow: scope.nextArrow ? scope.nextArrow : void 0
             });
             slider.on('init', function (sl) {
               if (attrs.onInit) {
-                scope.onInit();
+                scope.onInit(sl);
               }
               if (currentIndex != null) {
                 return sl.slideHandler(currentIndex);
@@ -139,6 +140,10 @@ angular.module('slick', []).directive('slick', [
                 });
               }
             });
+            if (scope.prevArrow || scope.nextArrow) {
+              $compile(slider[0].slick.$nextArrow)(scope.$parent);
+              $compile(slider[0].slick.$prevArrow)(scope.$parent);
+            }
             return scope.$watch('currentIndex', function (newVal, oldVal) {
               if (currentIndex != null && newVal != null && newVal !== currentIndex) {
                 return slider.slick('slickGoTo', newVal);
